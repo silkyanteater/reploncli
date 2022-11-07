@@ -33,12 +33,13 @@ class Repl(Cmd):
         self._update_prompt()
 
     def default(self, inp):
+        result = False
         if inp.startswith(".") and len(inp) > 1:
             os.system(inp[1:])
             self._update_prompt()
             return False
         try:
-            self.cli_function(shlex.split(inp))
+            result = self.cli_function(shlex.split(inp))
         except KeyboardInterrupt:
             print("^C")
         except EOFError:
@@ -47,7 +48,7 @@ class Repl(Cmd):
         except:
             traceback.print_exc()
         self._update_prompt()
-        return False
+        return result is True
 
 
 def reploncli(cli_function, repl_mode=None, help=None, prompt=""):
