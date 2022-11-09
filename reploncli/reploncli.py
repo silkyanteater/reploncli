@@ -6,11 +6,12 @@ from cmd import Cmd
 
 
 class Repl(Cmd):
-    def __init__(self, cli_function, prompt="", help=None):
+    def __init__(self, cli_function, prompt = "", help = None, sys_command_prefix = None):
         super().__init__()
         self.cli_function = cli_function
-        self.help = help
         self.prompt = str(prompt)
+        self.help = help
+        self.sys_command_prefix = sys_command_prefix
         self._prompt = prompt
         self._update_prompt()
 
@@ -34,8 +35,8 @@ class Repl(Cmd):
 
     def default(self, inp):
         result = False
-        if inp.startswith(".") and len(inp) > 1:
-            os.system(inp[1:])
+        if self.sys_command_prefix is not None and inp.startswith(self.sys_command_prefix) and len(inp) > len(self.sys_command_prefix):
+            os.system(inp[len(self.sys_command_prefix):])
             self._update_prompt()
             return False
         try:
@@ -51,11 +52,12 @@ class Repl(Cmd):
         return result is True
 
 
-def reploncli(cli_function, repl_mode=None, help=None, prompt=""):
+def reploncli(cli_function, repl_mode = None, help = None, prompt = "", sys_command_prefix = None):
+    assert sys_command_prefix is None or isinstance(sys_command_prefix, str), f"system command prefix must be string, got {type(sys_command_prefix).__name__} / {str(sys_command_prefix)}"
     if not callable(cli_function):
         raise TypeError("cli_function: callable expected")
     if repl_mode is True:
-        repl = Repl(cli_function, prompt, help)
+        repl = Repl(cli_function, prompt, help, sys_command_prefix)
         nothing_worse_than_keyboardinterrupt = True
         while nothing_worse_than_keyboardinterrupt:
             nothing_worse_than_keyboardinterrupt = False

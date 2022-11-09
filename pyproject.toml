@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "reploncli"
-version = "0.9.3"
+version = "0.9.4"
 description = "REPL extension to CLI apps"
 authors = ["silkyanteater <cyclopesrufus@gmail.com>"]
 license = "MIT"
